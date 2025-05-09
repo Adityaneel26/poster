@@ -9,7 +9,7 @@
       margin: 0;
       padding: 10px;
       font-family: sans-serif;
-      background: #f0f0f0;
+      background: linear-gradient(to bottom right, #f7f7f7, #e0eaff);
       text-align: center;
       animation: fadeIn 1s ease-in;
     }
@@ -75,6 +75,17 @@
       gap: 30px;
       flex-wrap: wrap;
     }
+
+    .credits a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #0077cc;
+    }
+
+    .credits a:hover {
+      text-decoration: underline;
+      color: #005599;
+    }
   </style>
 </head>
 <body>
@@ -90,8 +101,8 @@
 
   <footer>
     <div class="credits">
-      <div>🖌️ Designed by <strong>Rahul Mehta</strong></div>
-      <div>💻 Developed by <strong>Aditya Neel</strong></div>
+      <div>🖌️ Designed by <a href="https://wa.me/qr/46PPTQH7J4PHL1" target="_blank">Rahul Mehta</a></div>
+      <div>💻 Developed by <a href="https://wa.me/qr/3K25IZW4M6EPH1" target="_blank">Aditya Neel</a></div>
     </div>
   </footer>
 
@@ -100,7 +111,7 @@
     const ctx = canvas.getContext("2d");
 
     const background = new Image();
-    background.src = "poster.jpg"; // Make sure this image is in the same folder
+    background.src = "poster.jpg"; // Make sure this image is in same folder
 
     background.onload = () => {
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
@@ -108,10 +119,10 @@
 
     function generatePoster() {
       const file = document.getElementById("imageUpload").files[0];
-      const name = document.getElementById("nameInput").value.trim();
+      const name = document.getElementById("nameInput").value;
 
       if (!file || !name) {
-        alert("Please upload an image and enter your name.");
+        alert("Please upload an image and enter a name.");
         return;
       }
 
@@ -127,7 +138,7 @@
           ctx.fillStyle = "#000";
           ctx.font = "bold 48px sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(name, 220, 1070); // Centered under image
+          ctx.fillText(name, 220, 1070);  // Centered under image
 
           // Create image URL
           const imageURL = canvas.toDataURL("image/png");
@@ -136,14 +147,8 @@
           const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
           if (isMobile) {
-            // On mobile, create a temporary link and trigger download
-            const link = document.createElement('a');
-            link.href = imageURL;
-            link.download = 'poster.png';
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // On mobile, open image in new tab
+            window.open(imageURL, '_blank');
           } else {
             // On desktop, trigger download
             const link = document.createElement('a');
