@@ -7,10 +7,13 @@
   <style>
     body {
       margin: 0;
-      padding: 10px;
-      font-family: sans-serif;
-      background: #f0f0f0;
-      text-align: center;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #dbe9f4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
       animation: fadeIn 1s ease-in;
     }
 
@@ -19,72 +22,85 @@
       to { opacity: 1; }
     }
 
+    h2 {
+      margin-top: 20px;
+      color: #333;
+    }
+
     #posterWrapper {
-      max-width: 100%;
+      width: 100%;
+      max-width: 540px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      animation: floatUp 0.8s ease-in-out;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    input, button {
+      margin: 12px 0;
+      padding: 12px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+
+    input[type="file"] {
+      background: #f4f4f4;
+    }
+
+    button {
+      background-color: #ffc107;
+      color: #222;
+      border: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff9800;
     }
 
     canvas {
       width: 100%;
       height: auto;
-      max-width: 540px;
+      margin-top: 10px;
       border: 1px solid #ccc;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      animation: floatUp 1s ease-in-out;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    input, button {
-      margin: 8px 0;
-      padding: 10px;
-      width: 90%;
-      max-width: 300px;
-      font-size: 16px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #ffcc00;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #ff9900;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     footer {
-      margin-top: 30px;
+      margin: 30px 0 15px;
       font-size: 14px;
-      color: #555;
+      color: #666;
     }
 
     .credits {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 20px;
       flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
 
-  <h2>Generate Your Poster</h2>
-  <input type="file" id="imageUpload" accept="image/*">
-  <input type="text" id="nameInput" placeholder="Enter your name">
-  <button onclick="generatePoster()">Save Poster</button>
-
+  <h2>🎨 Generate Your Poster</h2>
   <div id="posterWrapper">
+    <input type="file" id="imageUpload" accept="image/*">
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button onclick="generatePoster()">Save Poster</button>
     <canvas id="posterCanvas" width="1080" height="1350"></canvas>
   </div>
 
@@ -100,7 +116,7 @@
     const ctx = canvas.getContext("2d");
 
     const background = new Image();
-    background.src = "poster.jpg"; // Make sure this image is in same folder
+    background.src = "poster.jpg"; // Make sure poster.jpg is in root folder
 
     background.onload = () => {
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
@@ -108,10 +124,10 @@
 
     function generatePoster() {
       const file = document.getElementById("imageUpload").files[0];
-      const name = document.getElementById("nameInput").value;
+      const name = document.getElementById("nameInput").value.trim();
 
       if (!file || !name) {
-        alert("Please upload an image and enter a name.");
+        alert("Please upload an image and enter your name.");
         return;
       }
 
@@ -123,23 +139,22 @@
           ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
           ctx.drawImage(userImage, 38, 660, 350, 350);
 
-          // Draw name text
+          // Draw name
           ctx.fillStyle = "#000";
           ctx.font = "bold 48px sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(name, 220, 1070);  // Centered under image
+          ctx.fillText(name, 220, 1070); // Adjust text position
 
-          // Create image URL
+          // Create PNG URL
           const imageURL = canvas.toDataURL("image/png");
 
-          // Detect if mobile device
+          // Detect if mobile
           const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
           if (isMobile) {
-            // On mobile, open image in new tab
+            // Open in new tab on mobile
             window.open(imageURL, '_blank');
           } else {
-            // On desktop, trigger download
+            // Download on desktop
             const link = document.createElement('a');
             link.download = 'poster.png';
             link.href = imageURL;
